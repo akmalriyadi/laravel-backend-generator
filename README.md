@@ -102,6 +102,27 @@ public function __construct(Testing $model)
 }
 ```
 
+# Support My Work
+
+Thank you for visiting my GitHub repository! Your interest in my work means a lot to me. If you find this project helpful or valuable, please consider supporting its development. 
+
+Creating and maintaining this project requires significant time and effort. Your support will enable me to continue improving and adding new features to this project.
+
+## How You Can Help
+
+1. **Star the Repository**: Show your appreciation by giving this repository a star. It helps increase visibility and encourages more contributors to join.
+
+2. **Share with Others**: If you know someone who might benefit from this project, please share it with them.
+
+3. **Make a Donation**: If you're in a position to contribute financially, any amount would be greatly appreciated. Your donations will directly support the ongoing development and maintenance of this project.
+
+   **Donate via PayPal**: [zainnoeryadie@gmail.com](https://www.paypal.com/paypalme/zainnoeryadie)
+
+4. **Have a Special Request or Need Assistance?**: If you have any specific requests, ideas for improvement, or if you require assistance related to this project, feel free to reach out. You can email me directly at [zainnoeryadie@gmail.com](mailto:zainnoeryadie@gmail.com).
+
+Thank you for your support!
+
+
 ## Credits
 
 - [Zainnoeryadie akmal sobandiar](https://github.com/akmalriyadi)
