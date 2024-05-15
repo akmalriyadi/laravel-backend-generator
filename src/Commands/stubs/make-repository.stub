@@ -1,0 +1,23 @@
+<?php
+
+namespace {namespace};
+
+use AkmalRiyadi\LaravelBackendGenerator\BaseRepository;
+use App\Models\{ModelName};
+
+class {repositoryName} extends BaseRepository{
+
+    /**
+    * Model class to be used in this repository for the common methods inside Eloquent
+    * Don't remove or change $this->model variable name
+    * @property \Illuminate\Database\Eloquent\Model|mixed $model;
+    */
+    protected $model;
+
+    public function __construct({ModelName} $model)
+    {
+        $this->model = $model;
+    }
+
+    // Write something awesome :)
+}

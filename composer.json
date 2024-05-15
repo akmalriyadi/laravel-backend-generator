@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "akmalriyadi/laravel-backend-generator",
+    "description": "This is my package laravel-backend-generator",
     "keywords": [
-        ":vendor_name",
+        "AkmalRiyadi",
         "laravel",
-        ":package_slug"
+        "laravel-backend-generator"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/akmalriyadi/laravel-backend-generator",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Zainnoeryadie akmal sobandiar",
+            "email": "zainnoeryadie@gmail.com",
             "role": "Developer"
         }
     ],
@@ -35,19 +35,19 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "AkmalRiyadi\\LaravelBackendGenerator\\": "src/",
+            "AkmalRiyadi\\LaravelBackendGenerator\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "AkmalRiyadi\\LaravelBackendGenerator\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
     "scripts": {
         "post-autoload-dump": "@composer run prepare",
-        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "clear": "@php vendor/bin/testbench package:purge-laravel-backend-generator --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "build": [
             "@composer run prepare",
@@ -73,10 +73,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "AkmalRiyadi\\LaravelBackendGenerator\\LaravelBackendGeneratorServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "LaravelBackendGenerator": "AkmalRiyadi\\LaravelBackendGenerator\\Facades\\LaravelBackendGenerator"
             }
         }
     },

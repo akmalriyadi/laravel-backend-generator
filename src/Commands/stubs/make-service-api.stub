@@ -1,0 +1,22 @@
+<?php
+
+namespace {namespace};
+
+use AkmalRiyadi\LaravelBackendGenerator\BaseServiceApi;
+use App\Repositories\{ModelName}Repository;
+
+class {serviceName} extends BaseServiceApi{
+
+    /**
+    * Don't remove or change $this->mainRepository variable name
+    * @property {ModelName}Repository $mainRepository;
+    */
+    protected $mainRepository;
+
+    public function __construct({ModelName}Repository $mainRepository)
+    {
+        $this->mainRepository = $mainRepository;
+    }
+
+    // Write something awesome :)
+}
