@@ -3,6 +3,8 @@
 
 With laravel backend generator, you can easly create backend for laravel
 
+Note: This not finish work, i hope anyone can contribute or support me with donation, share this package, use my package or anything :)
+
 
 ## Installation
 
