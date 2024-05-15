@@ -122,7 +122,7 @@ public function user()
 public function __construct(Testing $model)
 {
     $this->model = $this->model;
-    $this->with = [
+    $this->option['with'] = [
         'user'
     ]
 }

@@ -13,10 +13,13 @@ class {repositoryName} extends BaseRepository{
     * @property \Illuminate\Database\Eloquent\Model|mixed $model;
     */
     protected $model;
+    protected $option;
 
     public function __construct({ModelName} $model)
     {
         $this->model = $model;
+        $this->option['with] = [];
+        $this->option['withCount] = [];
     }
 
     // Write something awesome :)
