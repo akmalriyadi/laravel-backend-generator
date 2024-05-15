@@ -89,7 +89,26 @@ return $this->testingServiceApi->all(
 // or you can define params only you want like this
 return $this->testingServiceApi->all($request->all(), paginationOption: true)
 ```
+### Basic Model ScopeFilter
+if you set `true` on filterOption, your model must containt scopeFilter
+```php
+public function scopeFilter(Builder $query, array $filters)
+    {
+        return $query->when($filters['sort'] ?? false, function ($query, $sort) {
+            return $query->orderBy($sort['column'], $sort['dir']);
+        });
+    }
+```
+or you can use my trait 
+```php
+use AkmalRiyadi\LaravelBackendGenerator\Traits\BaseScope;
 
+
+class Testing extends Model
+{
+    use HasFactory, BaseScope;
+}
+```
 ### Sample Relation 
 #### **On Model**
 ```php
@@ -108,6 +127,11 @@ public function __construct(Testing $model)
     ]
 }
 ```
+# On Going Feature
+1. Basic Controller ( `non-api` )
+2. Blade Generator
+3. Working simple with image
+4. Working simple with slugable
 
 # Support My Work
 
