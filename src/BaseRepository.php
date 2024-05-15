@@ -129,10 +129,10 @@ class BaseRepository
 
     /**
      * Create item
-     * @param array $request
+     * @param mixed $request
      * @return Model
      */
-    public function create(array $request)
+    public function create(mixed $request)
     {
         return $this->model->create($request);
     }
@@ -140,12 +140,12 @@ class BaseRepository
     /**
      * Update Item
      * @param int $id
-     * @param array $request this should only $request from \Illuminate\Http\Request;
+     * @param mixed $request this should only $request from \Illuminate\Http\Request;
      * 
      * @return bool
      * @throws ModelNotFoundException
      */
-    public function update(int $id, array $request)
+    public function update(int $id, mixed $request)
     {
         $source = $this->model->findOrFail($id);
         return $source->update($request);

@@ -9,7 +9,7 @@ trait ApiCollectionResource
 {
     public static function apiCollection($resource)
     {
-        $result = self::collection($resource['data']['data']);
+        $result = self::collection($resource['data']);
         return response()->json([
             'success' => $resource['success'],
             'code' => $resource['code'],
@@ -20,10 +20,11 @@ trait ApiCollectionResource
     public static function paginateCollection($resource)
     {
         $result = self::collection($resource['data']['data']);
+        // dd($result);
         $data = [
             'success' => $resource['success'],
             'code' => $resource['code'],
-            'paginate' => $resource['data']['paginate'],
+            'paginate' => $resource['data']['pagination'],
 
             "data" => $result
         ];
@@ -35,7 +36,7 @@ trait ApiCollectionResource
 
     public static function otherCollection($resource)
     {
-        $result = self::make($resource['data']['data']);
+        $result = self::make($resource['data']);
         return response()->json([
             'success' => $resource['success'],
             'code' => $resource['code'],

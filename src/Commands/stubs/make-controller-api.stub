@@ -1,0 +1,89 @@
+<?php
+
+namespace {namespace};
+
+use AkmalRiyadi\LaravelBackendGenerator\Traits\ApiCollectionResource;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\Api\{ModelName}ServiceApi;
+use AkmalRiyadi\LaravelBackendGenerator\Resources\DefaultResource;
+use App\Http\Requests\{ModelName}\Update{ModelName}Request;
+use App\Http\Requests\{ModelName}\Store{ModelName}Request;
+
+class {controllerName} extends Controller
+{
+    use ApiCollectionResource;
+    /**
+     * For identity menu dashboard active
+     *
+     * @var [string]
+     */
+    private ${repoName}ServiceApi;
+
+    public function __construct({ModelName}ServiceApi ${repoName}ServiceApi)
+    {
+        $this->{repoName}ServiceApi = ${repoName}ServiceApi;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return mixed
+     */
+    public function index(Request $request)
+    {
+        $result = $this->{repoName}ServiceApi->all($request->all(),withOption:true,filterOption:true,paginateOption:true)->toJson();
+        // return $result;
+        return DefaultResource::paginateCollection($result);
+    }
+
+    public function trashed(Request $request)
+    {
+        $result = $this->{repoName}ServiceApi->all($request->all(),ItemOptions::ONLY_TRASHED,withOption:true,filterOption:true,paginateOption:true)->toJson();
+        // return $result;
+        return DefaultResource::paginateCollection($result);
+    }
+
+    public function show($id)
+    {
+        $result = $this->{repoName}ServiceApi->findOrFail($id,withOption:true)->toJson();
+        // return $result;
+        return DefaultResource::otherCollection($result);
+    }
+
+    public function store(Store{ModelName}Request $request)
+    {
+        $result = $this->{repoName}ServiceApi->create($request)->toJson();
+         // return $result;
+        return $this->notCollection($result);
+    }
+
+      public function update(Update{ModelName}Request $request, $id)
+    {
+        $result = $this->{repoName}ServiceApi->update($id, $request)->toJson();
+        // return $result;
+        return $this->notCollection($result);
+    }
+
+    public function delete($id)
+    {
+        $result = $this->{repoName}ServiceApi->delete($id)->toJson();
+        // return $result;
+        return $this->notCollection($result);
+    }
+
+    public function forceDelete($id)
+    {
+        $result = $this->{repoName}ServiceApi->forceDelete($id)->toJson();
+        // return $result;
+        return $this->notCollection($result);
+    }
+
+    public function restore($id)
+    {
+        $result = $this->{repoName}ServiceApi->restore($id)->toJson();
+        // return $result;
+        return $this->notCollection($result);
+    }
+}

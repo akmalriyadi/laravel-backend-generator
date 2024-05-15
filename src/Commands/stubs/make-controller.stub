@@ -1,0 +1,85 @@
+<?php
+
+namespace {namespace};
+
+use AkmalRiyadi\LaravelBackendGenerator\Traits\ApiCollectionResource;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Service\Api\{ModelName}ServiceApi;
+use AkmalRiyadi\LaravelBackendGenerator\Resources\DefaultResource;
+use App\Http\Requests\{ModelName}\Update{ModelName}Request;
+use App\Http\Requests\{ModelName}\Store{ModelName}Request;
+use App\Models\{ModelName};
+
+class {controllerName} extends Controller
+{
+    use ApiCollectionResource;
+    /**
+     * For identity menu dashboard active
+     *
+     * @var [string]
+     */
+    private ${ModelName}ServiceApi;
+
+    public function __construct({ModelName}ServiceApi ${ModelName}ServiceApi)
+    {
+        $this->{ModelName}ServiceApi = ${ModelName}ServiceApi;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return mixed
+     */
+    public function index(Request $request)
+    {
+        $result = $this->{ModelName}ServiceApi->filter($request->all())->toJson();
+        // return $result;
+        return DefaultResource::paginateCollection($result);
+    }
+
+    public function trashed(Request $request)
+    {
+        $result = $this->{ModelName}ServiceApi->trashed($request->all())->toJson();
+        // return $result;
+        return DefaultResource::paginateCollection($result);
+    }
+
+    public function show($id)
+    {
+        $result = $this->{ModelName}ServiceApi->findOrFail($id)->toJson();
+        // return $result;
+        return DefaultResource::otherCollection($result);
+    }
+
+    public function store(Store{ModelName}Request $request)
+    {
+        $result = $this->{ModelName}ServiceApi->create($request)->toJson();
+         // return $result;
+        return $this->notCollection($result);
+    }
+
+      public function update(Update{ModelName}Request $request, $id)
+    {
+        $result = $this->{ModelName}ServiceApi->update($id, $request)->toJson();
+        return $this->notCollection($result);
+    }
+
+    public function delete($id)
+    {
+        $result = $this->{ModelName}ServiceApi->delete($id)->toJson();
+        return $this->notCollection($result);
+    }
+
+    public function forceDelete($id)
+    {
+        $result = $this->{ModelName}ServiceApi->forceDelete($id)->toJson();
+        return $this->notCollection($result);
+    }
+
+    public function restore($id)
+    {
+        $result = $this->{ModelName}ServiceApi->restore($id)->toJson();
+        return $this->notCollection($result);
+    }
+}

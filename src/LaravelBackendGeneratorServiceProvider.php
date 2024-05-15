@@ -3,10 +3,12 @@
 namespace AkmalRiyadi\LaravelBackendGenerator;
 
 
-use AkmalRiyadi\LaravelBackendGenerator\Commands\MakeRepositoryAkm;
-use AkmalRiyadi\LaravelBackendGenerator\Commands\MakeServiceAkm;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use AkmalRiyadi\LaravelBackendGenerator\Commands\MakeRequestAkm;
+use AkmalRiyadi\LaravelBackendGenerator\Commands\MakeServiceAkm;
+use AkmalRiyadi\LaravelBackendGenerator\Commands\MakeControllerAkm;
+use AkmalRiyadi\LaravelBackendGenerator\Commands\MakeRepositoryAkm;
 
 class LaravelBackendGeneratorServiceProvider extends PackageServiceProvider
 {
@@ -22,6 +24,8 @@ class LaravelBackendGeneratorServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasCommand(MakeRepositoryAkm::class)
+            ->hasCommand(MakeControllerAkm::class)
+            ->hasCommand(MakeRequestAkm::class)
             ->hasCommand(MakeServiceAkm::class);
     }
 }

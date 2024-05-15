@@ -80,7 +80,7 @@ class BaseServiceApi
         bool $withCountOption = false
     ) {
         try {
-            $result = $this->mainRepository->findOrFail($id, $itemOptions, $withCountOption, $withCountOption);
+            $result = $this->mainRepository->findOrFail($id, $itemOptions, $withOption, $withCountOption);
             return $this->setResult($result)
                 ->setCode(200)
                 ->setStatus(true);
@@ -91,10 +91,10 @@ class BaseServiceApi
 
     /**
      * Create item
-     * @param array $request this should only $request from \Illuminate\Http\Request;
+     * @param mixed $request this should only $request from \Illuminate\Http\Request;
      * @return mixed
      */
-    public function create(array $request)
+    public function create(mixed $request)
     {
         try {
             $result = $this->mainRepository->create($request);
@@ -109,11 +109,11 @@ class BaseServiceApi
     /**
      * Update Item
      * @param int $id
-     * @param array $request this should only $request from \Illuminate\Http\Request;
+     * @param mixed $request this should only $request from \Illuminate\Http\Request;
      * 
      * @return mixed
      */
-    public function update(int $id, array $request)
+    public function update(int $id, mixed $request)
     {
         try {
             $result = $this->mainRepository->update($id, $request);

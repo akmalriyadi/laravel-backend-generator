@@ -78,11 +78,11 @@ class BaseService
     /**
      * Update Item
      * @param int $id
-     * @param array $request this should only $request from \Illuminate\Http\Request;
+     * @param mixed $request this should only $request from \Illuminate\Http\Request;
      * 
      * @return bool
      */
-    public function update(int $id, array $request)
+    public function update(int $id, mixed $request)
     {
         return $this->mainRepository->update($id, $request);
     }
