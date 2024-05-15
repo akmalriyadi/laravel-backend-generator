@@ -15,6 +15,8 @@ composer require akmalriyadi/laravel-backend-generator
 ```
 
 ## Usage Custom Command
+Note :
+Basic Controller ( `non-api` )` is not finished you will got error if you use that. 
 
 ```php
 php artisan make:repositoryakm User
@@ -25,6 +27,9 @@ php artisan make:serviceakm User
 
 php artisan make:serviceakm User --api
 //for create service api
+
+php artisan make:controlakm User --api
+//for create controller api
 ```
 
 ## Sample for Controller
