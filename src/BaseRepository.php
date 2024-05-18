@@ -3,7 +3,7 @@
 namespace AkmalRiyadi\LaravelBackendGenerator;
 
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
-use AkmalRiyadi\LaravelBackendGenerator\Traits\HasImage;
+use AkmalRiyadi\LaravelBackendGenerator\Traits\HasFile;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class BaseRepository
 {
 
-    use HasImage;
+    use HasFile;
 
     /**
      * define Model
@@ -60,10 +60,8 @@ class BaseRepository
         }
 
         if ($paginateOption) {
-            $limit = $request['limit'] ?? 5;
-            if ($limit <= 0) {
-                return $query->get();
-            }
+            $limitIdent = $request['limit'] ?? '5';
+            $limit = $limitIdent < 1 ? PHP_INT_MAX : $limitIdent;
             $query = $query->paginate($limit);
             $query = [
                 'pagination' => [
@@ -148,7 +146,7 @@ class BaseRepository
     public function update(int $id, mixed $request)
     {
         $source = $this->model->findOrFail($id);
-        return $source->update($request);
+        return $source->update($request->all());
     }
 
     /**
@@ -224,5 +222,22 @@ class BaseRepository
         }
 
         return $query;
+    }
+
+    public function storeConfiguration($key, $value)
+    {
+        $path = base_path('.env');
+
+        if (file_exists($path)) {
+
+            file_put_contents(
+                $path,
+                str_replace(
+                    $key . '=' . env($key),
+                    $key . '=' . $value,
+                    file_get_contents($path)
+                )
+            );
+        }
     }
 }

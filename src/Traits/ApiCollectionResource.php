@@ -19,12 +19,12 @@ trait ApiCollectionResource
 
     public static function paginateCollection($resource)
     {
-        $result = self::collection($resource['data']['data']);
+        $result = self::collection($resource['data']['data'] ?? '');
         // dd($result);
         $data = [
             'success' => $resource['success'],
             'code' => $resource['code'],
-            'paginate' => $resource['data']['pagination'],
+            'paginate' => $resource['data']['pagination'] ?? '',
 
             "data" => $result
         ];

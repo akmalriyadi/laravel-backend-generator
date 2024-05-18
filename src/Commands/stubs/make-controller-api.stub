@@ -59,7 +59,7 @@ class {controllerName} extends Controller
         return $this->notCollection($result);
     }
 
-      public function update(Update{ModelName}Request $request, $id)
+      public function update($id, Update{ModelName}Request $request)
     {
         $result = $this->{repoName}ServiceApi->update($id, $request)->toJson();
         // return $result;
