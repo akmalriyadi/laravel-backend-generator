@@ -5,6 +5,9 @@ With laravel backend generator, you can easly create backend for laravel
 
 Note: This not finish work, i hope anyone can contribute or support me with donation, share this package, use my package or anything :)
 
+## Update 05/18/2024
+1. Working with file
+2. fix bug repository pattern
 
 ## Installation
 
@@ -127,11 +130,41 @@ public function __construct(Testing $model)
     ]
 }
 ```
+## Working with file
+### Upload File
+You can use `$this->uploadFileV1`
+|Params|type|Description|
+|------|----|------|
+|$request|Request|Only use Request class from laravel|
+|$fieldName|string| column Database|
+|$path|string|Default path destination|
+|$customFieldName|string| for custom name file
+```php
+$this->uploadFileV1($request, $fieldName, $path = 'upload', $customFieldName = null)
+```
+### Delete File
+You can use `$this->deleteFile`
+|Params|type|Description|
+|------|----|-----------|
+|$data|string|Name of file|
+|$path|string|Path of file|
+```php
+$this->deleteFile($data, $path = 'upload')
+```
+### Rename File
+You can use `$this->renameFile`
+|Params|type|Description|
+|------|----|-----------|
+|$data|string|Name of file|
+|$title|string|New Name of file|
+|$path|string|Path of file|
+```php
+$this->renameFile($data, $title, $path = 'upload')
+```
 # On Going Feature
 1. Basic Controller ( `non-api` )
 2. Blade Generator
-3. Working simple with image
-4. Working simple with slugable
+3. Working simple with slugable
 
 # Support My Work
 

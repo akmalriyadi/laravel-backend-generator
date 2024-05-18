@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 trait HasFile
 {
-    public function uploadImageV1($request, $fieldName, $path = 'upload', $customFieldName = null)
+    public function uploadFileV1($request, $fieldName, $path = 'upload', $customFieldName = null)
     {
         if ($request->file($fieldName)) {
             $image = $request->file($fieldName);
@@ -27,7 +27,7 @@ trait HasFile
 
         return $request->$fieldName;
     }
-    public function uploadImageV2($request, $fieldName, $index, $field, $path = 'upload')
+    public function uploadFileV2($request, $fieldName, $index, $field, $path = 'upload')
     {
         if ($request->file($fieldName)[$index][$field]) {
             $image = $request->file($fieldName)[$index][$field];
@@ -42,7 +42,7 @@ trait HasFile
         return null;
     }
 
-    public function deleteImage($data, $path = 'upload')
+    public function deleteFile($data, $path = 'upload')
     {
         $image_path = public_path($path . '/' . $data);
         if (File::exists($image_path)) {
@@ -50,7 +50,7 @@ trait HasFile
         }
     }
 
-    public function rename($data, $title, $path = 'upload')
+    public function renameFile($data, $title, $path = 'upload')
     {
         $image_path = public_path($path . '/' . $data);
         $title = Str::slug($title, '-');
