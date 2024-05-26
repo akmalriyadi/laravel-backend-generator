@@ -60,11 +60,11 @@ class MakeControllerAkm extends Command
             $this->error("File : {$path} already exits");
         }
 
-        if ($api) {
-            $this->createRepository($className);
-            $this->createRequest($className);
-            $this->createService($className);
-        }
+
+        $this->createRepository($className);
+        $this->createRequest($className);
+        $this->createService($className);
+
     }
 
     private function createRepository($className)

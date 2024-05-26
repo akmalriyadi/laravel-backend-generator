@@ -3,7 +3,9 @@
 namespace AkmalRiyadi\LaravelBackendGenerator;
 
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use AkmalRiyadi\LaravelBackendGenerator\Resources\Paginate;
 use AkmalRiyadi\LaravelBackendGenerator\Traits\HasFile;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -43,48 +45,60 @@ class BaseRepository
      * @param bool $filterOption
      * @param bool $paginateOption
      * 
-     * @return array
+     * @return array 
      */
     public function all(
-        array $request,
+        array $request = [],
         ItemOptions $itemOptions = null,
         bool $withOption = false,
         bool $withCountOption = false,
         bool $filterOption = false,
-        bool $paginateOption = false
+        bool $paginateOption = false,
+        string $resourceClass = null,
+        string $columnOrder = 'created_at',
+        string $sortOrder = 'desc'
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
-
+        $query->orderBy($columnOrder, $sortOrder);
         if ($filterOption) {
             $query->filter($request);
         }
 
         if ($paginateOption) {
-            $limitIdent = $request['limit'] ?? '5';
-            $limit = $limitIdent < 1 ? PHP_INT_MAX : $limitIdent;
-            $query = $query->paginate($limit);
-            $query = [
-                'pagination' => [
-                    'current_page' => $query->currentPage(),
-                    'first_page_url' => $query->url(1),
-                    'last_page_url' => $query->url($query->lastPage()),
-                    'next_page_url' => $query->nextPageUrl(),
-                    'prev_page_url' => $query->previousPageUrl(),
-                    'from' => $query->firstItem(),
-                    'last_page' => $query->lastPage(),
-                    'links' => $query->linkCollection(),
-                    'path' => $query->path(),
-                    'per_page' => $query->perPage(),
-                    'to' => $query->lastItem(),
-                    'total' => $query->total()
-                ],
-                'data' => $query->items()
-            ];
+            return $this->pagination(query: $query, resourceClass: $resourceClass);
+        }
 
-            return $query;
+        if ($resourceClass) {
+            return $resourceClass::collection($query->get());
         }
 
         return $query->get();
+    }
+
+
+    /**
+     * Data pagination
+     * @param $query
+     * @return array
+     */
+    public function pagination(
+        Builder $query,
+        bool $limitOption = false,
+        int $requestLimit = 5,
+        int $limit = 0,
+        string $resourceClass = null
+    ) {
+        $limit = $requestLimit < 1 ? PHP_INT_MAX : $requestLimit;
+        $data = $query->paginate($limitOption ? $limit : $requestLimit);
+        $pagination = new Paginate($data);
+        if ($resourceClass) {
+            $data = $resourceClass::collection($data);
+            $data = [
+                'pagination' => $pagination,
+                'data' => $data
+            ];
+        }
+        return $data;
     }
 
     /**
@@ -100,10 +114,16 @@ class BaseRepository
         int $id,
         ItemOptions $itemOptions = null,
         bool $withOption = false,
-        bool $withCountOption = false
+        bool $withCountOption = false,
+        string $resourceClass = null,
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
-        return $query->find($id);
+        $query->find($id);
+        $result = $query;
+        if ($resourceClass) {
+            $result = $resourceClass::collection($query);
+        }
+        return $result;
     }
 
     /**
@@ -119,10 +139,16 @@ class BaseRepository
         int $id,
         ItemOptions $itemOptions = null,
         bool $withOption = false,
-        bool $withCountOption = false
+        bool $withCountOption = false,
+        string $resourceClass = null,
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
-        return $query->findOrFail($id);
+        $query->findOrFail($id);
+        $result = $query;
+        if ($resourceClass) {
+            $result = $resourceClass::collection($query);
+        }
+        return $result;
     }
 
     /**
@@ -132,7 +158,7 @@ class BaseRepository
      */
     public function create(mixed $request)
     {
-        return $this->model->create($request);
+        return $this->model->create($request->all());
     }
 
     /**

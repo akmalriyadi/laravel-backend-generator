@@ -27,10 +27,14 @@ class BaseServiceApi
         bool $withOption = false,
         bool $withCountOption = false,
         bool $filterOption = false,
-        bool $paginateOption = false
+        bool $paginateOption = false,
+        string $resourceClass = null,
+        string $columnOrder = 'created_at',
+        string $sortOrder = 'desc'
     ) {
         try {
-            $result = $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption);
+            $result = $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $resourceClass, $columnOrder, $sortOrder);
+            // $result = 'test';
             return $this->setResult($result)
                 ->setCode(200)
                 ->setStatus(true);
@@ -52,10 +56,11 @@ class BaseServiceApi
         int $id,
         ItemOptions $itemOptions = null,
         bool $withOption = false,
-        bool $withCountOption = false
+        bool $withCountOption = false,
+        string $resourceClass = null,
     ) {
         try {
-            $result = $this->mainRepository->find($id, $itemOptions, $withOption, $withCountOption);
+            $result = $this->mainRepository->find($id, $itemOptions, $withOption, $withCountOption, $resourceClass);
             return $this->setResult($result)
                 ->setCode(200)
                 ->setStatus(true);
@@ -77,10 +82,11 @@ class BaseServiceApi
         int $id,
         ItemOptions $itemOptions = null,
         bool $withOption = false,
-        bool $withCountOption = false
+        bool $withCountOption = false,
+        string $resourceClass = null,
     ) {
         try {
-            $result = $this->mainRepository->findOrFail($id, $itemOptions, $withOption, $withCountOption);
+            $result = $this->mainRepository->findOrFail($id, $itemOptions, $withOption, $withCountOption, $resourceClass);
             return $this->setResult($result)
                 ->setCode(200)
                 ->setStatus(true);

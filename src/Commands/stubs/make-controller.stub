@@ -2,84 +2,95 @@
 
 namespace {namespace};
 
-use AkmalRiyadi\LaravelBackendGenerator\Traits\ApiCollectionResource;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Service\Api\{ModelName}ServiceApi;
+use App\Services\{ModelName}Service;
 use AkmalRiyadi\LaravelBackendGenerator\Resources\DefaultResource;
 use App\Http\Requests\{ModelName}\Update{ModelName}Request;
 use App\Http\Requests\{ModelName}\Store{ModelName}Request;
-use App\Models\{ModelName};
 
 class {controllerName} extends Controller
 {
-    use ApiCollectionResource;
-    /**
-     * For identity menu dashboard active
-     *
-     * @var [string]
-     */
-    private ${ModelName}ServiceApi;
+    private $mainService;
+    private $resource;
 
-    public function __construct({ModelName}ServiceApi ${ModelName}ServiceApi)
+    public function __construct({ModelName}Service $mainService)
     {
-        $this->{ModelName}ServiceApi = ${ModelName}ServiceApi;
+        $this->mainService = $mainService;
+        $this->resource = DefaultResource::class;
     }
 
     /**
      * Display a listing of the resource.
-     *
-     * @return mixed
+     * @param Request
      */
     public function index(Request $request)
     {
-        $result = $this->{ModelName}ServiceApi->filter($request->all())->toJson();
-        // return $result;
-        return DefaultResource::paginateCollection($result);
+        $data = $this->mainService->all($request->all(), withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
     }
 
+    /**
+     * Display a listing trashed
+     * @param Request
+     */
     public function trashed(Request $request)
     {
-        $result = $this->{ModelName}ServiceApi->trashed($request->all())->toJson();
-        // return $result;
-        return DefaultResource::paginateCollection($result);
+        $data = $this->mainService->all($request->all(), ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
     }
 
+    /**
+     * Display specific resource
+     * @param string $id
+     */
     public function show($id)
     {
-        $result = $this->{ModelName}ServiceApi->findOrFail($id)->toJson();
-        // return $result;
-        return DefaultResource::otherCollection($result);
+        $data = $this->mainService->findOrFail($id, withOption: true, resourceClass: $this->resource)->toJson();
     }
 
+    /**
+     * Store a newly created resource in storage.
+     * @param $request
+     */
     public function store(Store{ModelName}Request $request)
     {
-        $result = $this->{ModelName}ServiceApi->create($request)->toJson();
-         // return $result;
-        return $this->notCollection($result);
+        $data = $this->mainService->create($request)->toJson();
     }
 
-      public function update(Update{ModelName}Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     * @param $request
+     * @param string $id
+     */
+    public function update($id, Update{ModelName}Request $request)
     {
-        $result = $this->{ModelName}ServiceApi->update($id, $request)->toJson();
-        return $this->notCollection($result);
+        $data = $this->mainService->update($id, $request)->toJson();
     }
 
+    /**
+     * Remove the specified resource from storage.
+     * @param string $id
+     */
     public function delete($id)
     {
-        $result = $this->{ModelName}ServiceApi->delete($id)->toJson();
-        return $this->notCollection($result);
+        $data = $this->mainService->delete($id)->toJson();
     }
 
+    /**
+     * Force Remove the specified resource from storage.
+     * @param string $id
+     */
     public function forceDelete($id)
     {
-        $result = $this->{ModelName}ServiceApi->forceDelete($id)->toJson();
-        return $this->notCollection($result);
+        $data = $this->mainService->forceDelete($id)->toJson();
     }
 
+    /**
+     * Restore the specified resource from storage.
+     * @param string $id
+     */
     public function restore($id)
     {
-        $result = $this->{ModelName}ServiceApi->restore($id)->toJson();
-        return $this->notCollection($result);
+        $data = $this->mainService->restore($id)->toJson();
     }
 }

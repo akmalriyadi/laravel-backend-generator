@@ -42,6 +42,21 @@ trait HasFile
         return null;
     }
 
+    public function uploadFileV3($request, $path = 'upload', $customFieldName = null)
+    {
+        $image = $request;
+        $filenamewithextension = $image->getClientOriginalName();
+        $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
+        $filename = Str::slug($filename, '-') . '-' . time();
+        if ($customFieldName) {
+            $filename = Str::slug($customFieldName);
+        }
+        $input = $filename . '.' . $image->getClientOriginalExtension();
+        $destination = public_path($path);
+        $img = $image->move($destination, $input);
+        return $input;
+    }
+
     public function deleteFile($data, $path = 'upload')
     {
         $image_path = public_path($path . '/' . $data);
@@ -57,7 +72,7 @@ trait HasFile
         if (File::exists($image_path)) {
             $extension = pathinfo($image_path, PATHINFO_EXTENSION);
             $fileName = $title . '.' . $extension;
-            $new_path = public_path('upload/' . $title . '.' . $extension);
+            $new_path = public_path($path . '/' . $title . '.' . $extension);
             File::move($image_path, $new_path);
             return $fileName;
         }

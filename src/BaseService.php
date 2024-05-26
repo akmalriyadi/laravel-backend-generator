@@ -24,9 +24,12 @@ class BaseService
         bool $withOption = false,
         bool $withCountOption = false,
         bool $filterOption = false,
-        bool $paginateOption = false
+        bool $paginateOption = false,
+        string $resourceClass = null,
+        string $columnOrder = 'created_at',
+        string $sortOrder = 'desc'
     ) {
-        return $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption);
+        return $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $resourceClass, $columnOrder, $sortOrder);
     }
 
     /**
@@ -42,9 +45,10 @@ class BaseService
         int $id,
         ItemOptions $itemOptions = null,
         bool $withOption = false,
-        bool $withCountOption = false
+        bool $withCountOption = false,
+        string $resourceClass = null,
     ) {
-        return $this->mainRepository->find($id, $itemOptions, $withOption, $withCountOption);
+        return $this->mainRepository->find($id, $itemOptions, $withOption, $withCountOption, $resourceClass);
     }
 
     /**
@@ -60,17 +64,18 @@ class BaseService
         int $id,
         ItemOptions $itemOptions = null,
         bool $withOption = false,
-        bool $withCountOption = false
+        bool $withCountOption = false,
+        string $resourceClass = null,
     ) {
-        return $this->mainRepository->findOrFail($id, $itemOptions, $withCountOption, $withCountOption);
+        return $this->mainRepository->findOrFail($id, $itemOptions, $withCountOption, $withCountOption, $resourceClass);
     }
 
     /**
      * Create item
-     * @param array $request
+     * @param mixed $request
      * @return void
      */
-    public function create(array $request)
+    public function create(mixed $request)
     {
         return $this->mainRepository->create($request);
     }

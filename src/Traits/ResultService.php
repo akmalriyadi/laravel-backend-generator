@@ -148,7 +148,7 @@ trait ResultService
         }
 
         return $this->setStatus(false)
-            ->setMessage('Terjadi suatu kesalahan!')
+            ->setMessage('There is an error, please contact a administrator!')
             ->setCode(500);
     }
 
@@ -164,12 +164,11 @@ trait ResultService
         } else {
             $http_code = $this->getCode();
         }
-
-        return [
+        return response()->json([
             'success' => $this->getStatus(),
             'code' => $http_code,
             'message' => $this->getMessage(),
             'data' => $this->getResult(),
-        ];
+        ], $http_code);
     }
 }

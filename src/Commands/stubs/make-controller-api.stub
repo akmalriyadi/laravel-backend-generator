@@ -2,8 +2,8 @@
 
 namespace {namespace};
 
-use AkmalRiyadi\LaravelBackendGenerator\Traits\ApiCollectionResource;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Api\{ModelName}ServiceApi;
@@ -13,77 +13,93 @@ use App\Http\Requests\{ModelName}\Store{ModelName}Request;
 
 class {controllerName} extends Controller
 {
-    use ApiCollectionResource;
-    /**
-     * For identity menu dashboard active
-     *
-     * @var [string]
-     */
-    private ${repoName}ServiceApi;
+    private $mainServiceApi;
+    private $resource;
 
-    public function __construct({ModelName}ServiceApi ${repoName}ServiceApi)
+    public function __construct({ModelName}ServiceApi $mainServiceApi)
     {
-        $this->{repoName}ServiceApi = ${repoName}ServiceApi;
+        $this->mainServiceApi = $mainServiceApi;
+        $this->resource = DefaultResource::class;
     }
 
     /**
      * Display a listing of the resource.
-     *
-     * @return mixed
+     * @param Request
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
-        $result = $this->{repoName}ServiceApi->all($request->all(),withOption:true,filterOption:true,paginateOption:true)->toJson();
-        // return $result;
-        return DefaultResource::paginateCollection($result);
+        return $this->mainServiceApi->all($request->all(), withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
     }
 
+    /**
+     * Display a listing trashed
+     * @param Request
+     * @return JsonResponse
+     */
     public function trashed(Request $request)
     {
-        $result = $this->{repoName}ServiceApi->all($request->all(),ItemOptions::ONLY_TRASHED,withOption:true,filterOption:true,paginateOption:true)->toJson();
-        // return $result;
-        return DefaultResource::paginateCollection($result);
+        return $this->mainServiceApi->all($request->all(), ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
     }
 
+    /**
+     * Display specific resource
+     * @param string $id
+     * @return JsonResponse
+     */
     public function show($id)
     {
-        $result = $this->{repoName}ServiceApi->findOrFail($id,withOption:true)->toJson();
-        // return $result;
-        return DefaultResource::otherCollection($result);
+        return $this->mainServiceApi->findOrFail($id, withOption: true, resourceClass: $this->resource)->toJson();
     }
 
+    /**
+     * Store a newly created resource in storage.
+     * @param $request
+     * @return JsonResponse
+     */
     public function store(Store{ModelName}Request $request)
     {
-        $result = $this->{repoName}ServiceApi->create($request)->toJson();
-         // return $result;
-        return $this->notCollection($result);
+        return $this->mainServiceApi->create($request)->toJson();
     }
 
-      public function update($id, Update{ModelName}Request $request)
+    /**
+     * Update the specified resource in storage.
+     * @param $request
+     * @param string $id
+     * @return JsonResponse
+     */
+    public function update($id, Update{ModelName}Request $request)
     {
-        $result = $this->{repoName}ServiceApi->update($id, $request)->toJson();
-        // return $result;
-        return $this->notCollection($result);
+        return $this->mainServiceApi->update($id, $request)->toJson();
     }
 
+    /**
+     * Remove the specified resource from storage.
+     * @param string $id
+     * @return JsonResponse
+     */
     public function delete($id)
     {
-        $result = $this->{repoName}ServiceApi->delete($id)->toJson();
-        // return $result;
-        return $this->notCollection($result);
+        return $this->mainServiceApi->delete($id)->toJson();
     }
 
+    /**
+     * Force Remove the specified resource from storage.
+     * @param string $id
+     * @return JsonResponse
+     */
     public function forceDelete($id)
     {
-        $result = $this->{repoName}ServiceApi->forceDelete($id)->toJson();
-        // return $result;
-        return $this->notCollection($result);
+        return $this->mainServiceApi->forceDelete($id)->toJson();
     }
 
+    /**
+     * Restore the specified resource from storage.
+     * @param string $id
+     * @return JsonResponse
+     */
     public function restore($id)
     {
-        $result = $this->{repoName}ServiceApi->restore($id)->toJson();
-        // return $result;
-        return $this->notCollection($result);
+        return $this->mainServiceApi->restore($id)->toJson();
     }
 }
