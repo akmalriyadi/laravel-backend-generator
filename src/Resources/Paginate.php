@@ -26,7 +26,6 @@ class Paginate extends ResourceCollection
                 "total" => $this->total(),
                 "path" => $this->getOptions()['path'],
             ],
-            'data' => $this->items()
         ];
     }
 }
