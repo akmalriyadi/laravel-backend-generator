@@ -29,7 +29,7 @@ class {controllerName} extends Controller
      */
     public function index(Request $request)
     {
-        return $this->mainServiceApi->all($request->all(), withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
+        return $this->mainServiceApi->all($request,ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
     }
 
     /**
@@ -39,7 +39,7 @@ class {controllerName} extends Controller
      */
     public function trashed(Request $request)
     {
-        return $this->mainServiceApi->all($request->all(), ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
+        return $this->mainServiceApi->all($request, ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
     }
 
     /**

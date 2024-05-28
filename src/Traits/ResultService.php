@@ -120,10 +120,12 @@ trait ResultService
     public function exceptionResponse(Exception $exception)
     {
         if ($exception instanceof QueryException) {
-            if ($exception->errorInfo[1] == 1451) {
-                return $this->setStatus(false)
-                    ->setMessage('Data are use constaint')
-                    ->setCode(400);
+            if ($exception->errorInfo) {
+                if ($exception->errorInfo[1] == 1451) {
+                    return $this->setStatus(false)
+                        ->setMessage('Data are use constaint')
+                        ->setCode(400);
+                }
             }
         }
         if ($exception instanceof ModelNotFoundException) {

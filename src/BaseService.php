@@ -2,7 +2,12 @@
 
 namespace AkmalRiyadi\LaravelBackendGenerator;
 
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions;
 
 class BaseService
 {
@@ -11,39 +16,75 @@ class BaseService
     /**
      * Show all item
      * 
-     * @param array $request must input $request->all()
-     * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["DEFAULT","WITH_TRASHED","ONLY_TRASHED"]
-     * @param bool $filterOption
-     * @param bool $paginateOption
+     * @param Request $request
+     * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
+     * @param bool $withOtion option for relation data, default is false
+     * @param bool $withCountOption option for count relation data, default is false
+     * @param bool $filterOption option for scopeFilter on model::class
+     * @param bool $paginateOption option for pagination data
+     * @param string $resourceClass class for api resource
+     * @param string $columnOrder column order data
+     * @param string $sortOrder sort method order data
      * 
-     * @return array
+     * @return array 
      */
     public function all(
-        array $request,
-        ItemOptions $itemOptions = null,
+        Request $request,
+        ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
         bool $filterOption = false,
         bool $paginateOption = false,
-        string $resourceClass = null,
         string $columnOrder = 'created_at',
-        string $sortOrder = 'desc'
+        string $sortOrder = 'desc',
+        string $resourceClass = null
     ) {
-        return $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $resourceClass, $columnOrder, $sortOrder);
+        return $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $columnOrder, $sortOrder, $resourceClass);
+    }
+
+
+    /**
+     * find data with where clause
+     *
+     * @param string $column //column data for where
+     * @param string $ident //data for check on yout column
+     * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
+     * @param bool $withOtion option for relation data, default is false
+     * @param bool $withCountOption option for count relation data, default is false
+     * @param string $columnOrder column order data
+     * @param string $sortOrder sort method order data
+     * @param QueryOptions $getOption use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions ["QueryOptions::GET","QueryOptions::FIRST"]
+     * @param string $resourceClass class for api resource
+     * 
+     * @return Collection
+     */
+    public function where(
+        string $column,
+        string $ident,
+        ItemOptions $itemOptions = ItemOptions::DEFAULT,
+        bool $withOption = false,
+        bool $withCountOption = false,
+        string $columnOrder = 'created_at',
+        string $sortOrder = 'desc',
+        string $getOption = 'get',
+        string $resourceClass = null
+    ) {
+        return $this->mainRepository->where($column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
     }
 
     /**
      * find item by id
-     * @param int $id
-     * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["DEFAULT","WITH_TRASHED","ONLY_TRASHED"]
-     * @param bool $withOption
-     * @param bool $withCountOption
+     * @param string | int $id
+     * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
+     * @param bool $withOtion option for relation data, default is false
+     * @param bool $withCountOption option for count relation data, default is false
+     * @param string $resourceClass class for api resource
      * 
-     * @return void
+     * @return Model
      */
     public function find(
-        int $id,
-        ItemOptions $itemOptions = null,
+        string | int $id,
+        ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
         string $resourceClass = null,
@@ -53,7 +94,7 @@ class BaseService
 
     /**
      * find or fail item by id
-     * @param int $id
+     * @param string | int $id
      * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["DEFAULT","WITH_TRASHED","ONLY_TRASHED"]
      * @param bool $withOption
      * @param bool $withCountOption
@@ -61,19 +102,19 @@ class BaseService
      * @return void
      */
     public function findOrFail(
-        int $id,
-        ItemOptions $itemOptions = null,
+        string | int $id,
+        ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
         string $resourceClass = null,
     ) {
-        return $this->mainRepository->findOrFail($id, $itemOptions, $withCountOption, $withCountOption, $resourceClass);
+        return $this->mainRepository->findOrFail($id, $itemOptions, $withOption, $withCountOption, $resourceClass);
     }
 
     /**
      * Create item
      * @param mixed $request
-     * @return void
+     * @return Model
      */
     public function create(mixed $request)
     {
@@ -82,23 +123,23 @@ class BaseService
 
     /**
      * Update Item
-     * @param int $id
+     * @param string | int $id
      * @param mixed $request this should only $request from \Illuminate\Http\Request;
      * 
      * @return bool
      */
-    public function update(int $id, mixed $request)
+    public function update(string | int $id, mixed $request)
     {
         return $this->mainRepository->update($id, $request);
     }
 
     /**
      * Delete Item
-     * @param int $id
+     * @param string | int $id
      * 
      * @return bool
      */
-    public function delete(int $id)
+    public function delete(string | int $id)
     {
         return $this->mainRepository->delete($id);
     }
@@ -115,20 +156,20 @@ class BaseService
 
     /**
      * Force delete item
-     * @param int $id
+     * @param string | int $id
      * @return bool
      */
-    public function forceDelete(int $id)
+    public function forceDelete(string | int $id)
     {
         return $this->mainRepository->forceDelete($id);
     }
 
     /**
      * Restore item
-     * @param int $id
+     * @param string | int $id
      * @return bool
      */
-    public function restore(int $id)
+    public function restore(string | int $id)
     {
         return $this->mainRepository->restore($id);
     }
