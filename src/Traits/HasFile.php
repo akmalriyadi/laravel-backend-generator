@@ -48,12 +48,25 @@ trait HasFile
         $filenamewithextension = $image->getClientOriginalName();
         $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
         $filename = Str::slug($filename, '-') . '-' . time();
+        $extension = $image->getClientOriginalExtension();
         if ($customFieldName) {
             $filename = Str::slug($customFieldName);
         }
-        $input = $filename . '.' . $image->getClientOriginalExtension();
+        $input = $filename . '.' . $extension;
         $destination = public_path($path);
-        $img = $image->move($destination, $input);
+
+        $counter = 1;
+        while (file_exists($destination . '/' . $input)) {
+            if (preg_match('/-(\d+)$/', $filename, $matches)) {
+                $counter = intval($matches[1]) + 1;
+                $filename = preg_replace('/-(\d+)$/', '', $filename);
+            } else {
+                $counter++;
+            }
+            $input = $filename . '-' . $counter . '.' . $extension;
+        }
+
+        $image->move($destination, $input);
         return $input;
     }
 
