@@ -18,8 +18,8 @@ class {repositoryName} extends BaseRepository{
     public function __construct({ModelName} $model)
     {
         $this->model = $model;
-        $this->option['with] = [];
-        $this->option['withCount] = [];
+        $this->option['with'] = [];
+        $this->option['withCount'] = [];
     }
 
     // Write something awesome :)

@@ -4,6 +4,7 @@ namespace AkmalRiyadi\LaravelBackendGenerator;
 
 use Illuminate\Http\Request;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\PaginateType;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions;
 use AkmalRiyadi\LaravelBackendGenerator\Traits\ResultService;
 
@@ -40,7 +41,7 @@ class BaseServiceApi
         string $resourceClass = null
     ) {
         try {
-            $result = $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $columnOrder, $sortOrder, $resourceClass);
+            $result = $this->mainRepository->all(request: $request, itemOptions: $itemOptions, withOption: $withOption, withCountOption: $withCountOption, filterOption: $filterOption, paginateOption: $paginateOption, paginateType: PaginateType::REQUEST, columnOrder: $columnOrder, sortOrder: $sortOrder, resourceClass: $resourceClass);
 
             return $this->setResult($result)
                 ->setCode(200)

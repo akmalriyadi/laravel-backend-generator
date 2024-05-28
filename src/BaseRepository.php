@@ -10,6 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use AkmalRiyadi\LaravelBackendGenerator\Traits\HasFile;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\PaginateType;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions;
 use AkmalRiyadi\LaravelBackendGenerator\Resources\Paginate;
 
@@ -62,19 +63,21 @@ class BaseRepository
         bool $withCountOption = false,
         bool $filterOption = false,
         bool $paginateOption = false,
+        PaginateType $paginateType = PaginateType::REQUEST,
+        int $paginateCustomCount = 5,
+        bool $limitOption = true,
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
         string $resourceClass = null
     ) {
-        $request = $request->all();
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
         $query->orderBy($columnOrder, $sortOrder);
         if ($filterOption) {
-            $query->filter($request);
+            $query->filter($request->all());
         }
 
         if ($paginateOption) {
-            return $this->pagination(query: $query, requestLimit: $request['limit'] ?? 5, resourceClass: $resourceClass);
+            return $this->pagination(query: $query, limitOption: $limitOption, paginateType: $paginateType, request: $request, paginateCustomCount: $paginateCustomCount, resourceClass: $resourceClass);
         }
 
         if ($resourceClass) {
@@ -97,9 +100,10 @@ class BaseRepository
      * @param QueryOptions $getOption use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions ["QueryOptions::GET","QueryOptions::FIRST"]
      * @param string $resourceClass class for api resource
      * 
-     * @return Collection
+     * @return Collection | array
      */
     public function where(
+        ?Request $request,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -108,17 +112,22 @@ class BaseRepository
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
         QueryOptions $getOption = QueryOptions::GET,
+        PaginateType $paginateType = PaginateType::REQUEST,
+        int $paginateCustomCount = 5,
+        bool $limitOption = true,
         string $resourceClass = null
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
         $query->where($column, $ident)->orderBy($columnOrder, $sortOrder);
         $result = $query;
         switch ($getOption) {
-            case QueryOptions::FIRST:
-                $result = $query->first();
+            case QueryOptions::PAGINATE:
+                return $this->pagination(query: $query, limitOption: $limitOption, paginateType: $paginateType, request: $request, paginateCustomCount: $paginateCustomCount, resourceClass: $resourceClass);
+            case QueryOptions::GET:
+                $result = $query->get();
                 break;
             default:
-                $result = $query->get();
+                $result = $query->first();
                 break;
         }
         if ($resourceClass) {
@@ -292,21 +301,33 @@ class BaseRepository
 
     /**
      * Easly pagination model->paginate() to pagination data
-     * @param Builder $query Your database builder query
-     * @param bool $limitOption option if you want to show data as pagination without limit, if false this will force $requestLimit to MAX INT
-     * @param int $requestLimit limit data option
-     * @param string $resourceClass class for api resource
+     *
+     * @param Builder $query // Your database builder query
+     * @param boolean $limitOption // option if you want to show data as pagination without limit, if false this will force $requestLimit to MAX INT
+     * @param PaginateType $paginateType
+     * @param Request $request
+     * @param integer $paginateCustomCount
+     * @param string|null $resourceClass
      * 
      * @return array
      */
     public function pagination(
         Builder $query,
         bool $limitOption = true,
-        int $requestLimit = 5,
+        PaginateType $paginateType = PaginateType::REQUEST,
+        Request $request,
+        int $paginateCustomCount = 5,
         string $resourceClass = null
     ) {
-        $limit = $requestLimit;
-        if ($limitOption) {
+        switch ($paginateType) {
+            case PaginateType::CUSTOM:
+                $limit = $paginateCustomCount;
+                break;
+            default:
+                $limit = $request->limit ?? 5;
+                break;
+        }
+        if (!$limitOption) {
             $limit =  PHP_INT_MAX;
         }
         $data = $query->paginate($limit);
@@ -322,28 +343,35 @@ class BaseRepository
     }
 
     /**
-     * Transform data collection to pagination
+     * Easly pagination collection data to pagination data
      *
      * @param Collection $collection
      * @param boolean $limitOption
-     * @param int $requestLimit
-     * @param int $current
+     * @param PaginateType $paginateType
      * @param Request $request
+     * @param integer $paginateCustomCount
      * 
      * @return LengthAwarePaginator
      */
     public function customPaginate(
         Collection $collection,
         bool $limitOption = true,
-        int $requestLimit = 5,
-        int $current = 1,
-        Request $request
+        PaginateType $paginateType = PaginateType::REQUEST,
+        Request $request,
+        int $paginateCustomCount = 5,
     ) {
-        $limit = $requestLimit;
-        if ($limitOption) {
+        switch ($paginateType) {
+            case PaginateType::CUSTOM:
+                $limit = $paginateCustomCount;
+                break;
+            default:
+                $limit = $request->limit ?? 5;
+                break;
+        }
+        if (!$limitOption) {
             $limit =  PHP_INT_MAX;
         }
-        $currentPage = $current;
+        $currentPage = $request->page;
         $currentPageItems = $collection->slice(($currentPage - 1) * $limit, $limit)->all();
         $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $limit, $currentPage, [
             'path' => $request->url(),

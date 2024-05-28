@@ -6,4 +6,5 @@ enum QueryOptions: string
 {
     case GET = 'get';
     case FIRST = 'first';
+    case PAGINATE = 'paginate';
 }
