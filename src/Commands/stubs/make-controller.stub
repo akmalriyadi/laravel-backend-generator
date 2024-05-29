@@ -27,7 +27,7 @@ class {controllerName} extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->mainService->all($request,ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
+        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateType: PaginateType::REQUEST, limitOption: true, resourceClass: $this->resource)->toJson();
     }
 
     /**
@@ -36,7 +36,7 @@ class {controllerName} extends Controller
      */
     public function trashed(Request $request)
     {
-        $data = $this->mainService->all($request, ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, resourceClass: $this->resource)->toJson();
+        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, paginateType: PaginateType::REQUEST, resourceClass: $this->resource)->toJson();
     }
 
     /**

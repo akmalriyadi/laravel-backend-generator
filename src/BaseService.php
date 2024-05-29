@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\PaginateType;
 use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions;
 
 class BaseService
@@ -35,11 +36,14 @@ class BaseService
         bool $withCountOption = false,
         bool $filterOption = false,
         bool $paginateOption = false,
+        PaginateType $paginateType = PaginateType::REQUEST,
+        int $paginateCustomCount = 5,
+        bool $limitOption = true,
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
         string $resourceClass = null
     ) {
-        return $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $columnOrder, $sortOrder, $resourceClass);
+        return $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $paginateType, $paginateCustomCount, $limitOption, $columnOrder, $sortOrder, $resourceClass);
     }
 
 

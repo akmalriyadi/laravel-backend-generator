@@ -50,9 +50,12 @@ class BaseRepository
      * @param bool $withCountOption option for count relation data, default is false
      * @param bool $filterOption option for scopeFilter on model::class
      * @param bool $paginateOption option for pagination data
-     * @param string $resourceClass class for api resource
+     * @param PaginateType $paginateType option for type paginate
+     * @param int $paginateCustomCount this will enable when paginateType is CUSTOM
+     * @param bool $limitOption option if you want to show data as pagination without limit, if false this will force $requestLimit to MAX INT
      * @param string $columnOrder column order data
      * @param string $sortOrder sort method order data
+     * @param string $resourceClass class for api resource
      * 
      * @return array 
      */
