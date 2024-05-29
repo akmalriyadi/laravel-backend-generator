@@ -73,7 +73,7 @@ class BaseServiceApi
      * @return mixed
      */
     public function where(
-        ?Request $request,
+        ?Request $request = null,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -85,7 +85,7 @@ class BaseServiceApi
         string $resourceClass = null
     ) {
         try {
-            $result = $this->mainRepository->where($column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
+            $result = $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
 
             return $this->setResult($result)
                 ->setCode(200)

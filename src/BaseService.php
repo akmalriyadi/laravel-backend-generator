@@ -63,7 +63,7 @@ class BaseService
      * @return Collection
      */
     public function where(
-        ?Request $request,
+        ?Request $request = null,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -74,7 +74,7 @@ class BaseService
         string $getOption = 'get',
         string $resourceClass = null
     ) {
-        return $this->mainRepository->where($column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
+        return $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
     }
 
     /**
