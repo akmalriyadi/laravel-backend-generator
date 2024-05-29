@@ -73,7 +73,7 @@ class BaseServiceApi
      * @return mixed
      */
     public function where(
-        ?Request $request = null,
+        ?Request $request,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -82,10 +82,13 @@ class BaseServiceApi
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
         QueryOptions $getOption = QueryOptions::GET,
+        PaginateType $paginateType = PaginateType::REQUEST,
+        int $paginateCustomCount = 5,
+        bool $limitOption = true,
         string $resourceClass = null
     ) {
         try {
-            $result = $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
+            $result = $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $paginateType, $paginateCustomCount, $limitOption, $resourceClass);
 
             return $this->setResult($result)
                 ->setCode(200)

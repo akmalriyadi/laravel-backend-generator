@@ -63,7 +63,7 @@ class BaseService
      * @return Collection
      */
     public function where(
-        ?Request $request = null,
+        ?Request $request,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -71,10 +71,13 @@ class BaseService
         bool $withCountOption = false,
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
-        string $getOption = 'get',
+        QueryOptions $getOption = QueryOptions::GET,
+        PaginateType $paginateType = PaginateType::REQUEST,
+        int $paginateCustomCount = 5,
+        bool $limitOption = true,
         string $resourceClass = null
     ) {
-        return $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $resourceClass);
+        return $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $paginateType, $paginateCustomCount, $limitOption, $resourceClass);
     }
 
     /**
