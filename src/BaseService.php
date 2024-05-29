@@ -63,6 +63,7 @@ class BaseService
      * @return Collection
      */
     public function where(
+        ?Request $request,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,

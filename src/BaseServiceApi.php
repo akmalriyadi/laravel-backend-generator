@@ -73,6 +73,7 @@ class BaseServiceApi
      * @return mixed
      */
     public function where(
+        ?Request $request,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
