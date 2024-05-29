@@ -6,6 +6,7 @@ use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use AkmalRiyadi\LaravelBackendGenerator\Enums\PaginateType;
 use App\Services\Api\{ModelName}ServiceApi;
 use AkmalRiyadi\LaravelBackendGenerator\Resources\DefaultResource;
 use App\Http\Requests\{ModelName}\Update{ModelName}Request;
