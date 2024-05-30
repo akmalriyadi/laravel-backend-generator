@@ -28,7 +28,7 @@ class {controllerName} extends Controller
      */
     public function index(Request $request)
     {
-        return $this->mainServiceApi->all(request: $request, itemOptions: ItemOptions::ONLY_DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
+        return $this->mainServiceApi->all(request: $request, itemOptions: ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
     }
 
     /**

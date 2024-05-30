@@ -26,7 +26,7 @@ class {controllerName} extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::ONLY_DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
+        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
     }
 
     /**
