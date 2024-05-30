@@ -5,9 +5,7 @@ namespace {namespace};
 use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use AkmalRiyadi\LaravelBackendGenerator\Enums\PaginateType;
 use App\Services\{ModelName}Service;
-use AkmalRiyadi\LaravelBackendGenerator\Resources\DefaultResource;
 use App\Http\Requests\{ModelName}\Update{ModelName}Request;
 use App\Http\Requests\{ModelName}\Store{ModelName}Request;
 
