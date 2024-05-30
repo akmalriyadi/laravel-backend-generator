@@ -14,12 +14,10 @@ use App\Http\Requests\{ModelName}\Store{ModelName}Request;
 class {controllerName} extends Controller
 {
     private $mainService;
-    private $resource;
 
     public function __construct({ModelName}Service $mainService)
     {
         $this->mainService = $mainService;
-        $this->resource = DefaultResource::class;
     }
 
     /**
@@ -28,7 +26,7 @@ class {controllerName} extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateType: PaginateType::REQUEST, limitOption: true, resourceClass: $this->resource)->toJson();
+        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::ONLY_DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
     }
 
     /**
@@ -37,7 +35,7 @@ class {controllerName} extends Controller
      */
     public function trashed(Request $request)
     {
-        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, paginateType: PaginateType::REQUEST, resourceClass: $this->resource)->toJson();
+        $data = $this->mainService->all(request: $request, itemOptions: ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
     }
 
     /**
@@ -46,7 +44,7 @@ class {controllerName} extends Controller
      */
     public function show($id)
     {
-        $data = $this->mainService->findOrFail($id, withOption: true, resourceClass: $this->resource)->toJson();
+        $data = $this->mainService->findOrFail($id, withOption: true, resourceOption: true)->toJson();
     }
 
     /**

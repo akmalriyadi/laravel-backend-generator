@@ -15,12 +15,10 @@ use App\Http\Requests\{ModelName}\Store{ModelName}Request;
 class {controllerName} extends Controller
 {
     private $mainServiceApi;
-    private $resource;
 
     public function __construct({ModelName}ServiceApi $mainServiceApi)
     {
         $this->mainServiceApi = $mainServiceApi;
-        $this->resource = DefaultResource::class;
     }
 
     /**
@@ -30,7 +28,7 @@ class {controllerName} extends Controller
      */
     public function index(Request $request)
     {
-        return $this->mainServiceApi->all(request: $request, itemOptions: ItemOptions::DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateType: PaginateType::REQUEST, limitOption: true, resourceClass: $this->resource)->toJson();
+        return $this->mainServiceApi->all(request: $request, itemOptions: ItemOptions::ONLY_DEFAULT, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
     }
 
     /**
@@ -40,7 +38,7 @@ class {controllerName} extends Controller
      */
     public function trashed(Request $request)
     {
-        return $this->mainServiceApi->all(request: $request, itemOptions: ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, paginateType: PaginateType::REQUEST, resourceClass: $this->resource)->toJson();
+        return $this->mainServiceApi->all(request: $request, itemOptions: ItemOptions::ONLY_TRASHED, withOption: true, filterOption: true, paginateOption: true, paginateRequest: true, resourceOption: true)->toJson();
     }
 
     /**
@@ -50,7 +48,7 @@ class {controllerName} extends Controller
      */
     public function show($id)
     {
-        return $this->mainServiceApi->findOrFail($id, withOption: true, resourceClass: $this->resource)->toJson();
+        return $this->mainServiceApi->findOrFail($id, withOption: true, resourceOption: true)->toJson();
     }
 
     /**

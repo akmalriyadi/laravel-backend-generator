@@ -36,6 +36,8 @@ class BaseRepository
      */
     protected $option;
 
+    protected $resourceClass;
+
     public function __construct(Model $model)
     {
         $this->model = $model;
@@ -50,12 +52,12 @@ class BaseRepository
      * @param bool $withCountOption option for count relation data, default is false
      * @param bool $filterOption option for scopeFilter on model::class
      * @param bool $paginateOption option for pagination data
-     * @param PaginateType $paginateType option for type paginate
-     * @param int $paginateCustomCount this will enable when paginateType is CUSTOM
+     * @param bool $paginateRequest option for paginate from request
+     * @param int | null $paginateCustomCount this will enable when paginateType is CUSTOM
      * @param bool $limitOption option if you want to show data as pagination without limit, if false this will force $requestLimit to MAX INT
      * @param string $columnOrder column order data
      * @param string $sortOrder sort method order data
-     * @param string $resourceClass class for api resource
+     * @param bool $resourceOption class for api resource
      * 
      * @return array 
      */
@@ -66,12 +68,11 @@ class BaseRepository
         bool $withCountOption = false,
         bool $filterOption = false,
         bool $paginateOption = false,
-        PaginateType $paginateType = PaginateType::REQUEST,
-        int $paginateCustomCount = 5,
-        bool $limitOption = true,
+        bool $paginateRequest = true,
+        ?int $paginateCustomCount = 5,
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
-        string $resourceClass = null
+        bool $resourceOption = false
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
         $query->orderBy($columnOrder, $sortOrder);
@@ -80,11 +81,11 @@ class BaseRepository
         }
 
         if ($paginateOption) {
-            return $this->pagination(query: $query, limitOption: $limitOption, paginateType: $paginateType, request: $request, paginateCustomCount: $paginateCustomCount, resourceClass: $resourceClass);
+            return $this->pagination(query: $query, paginateRequest: $paginateRequest, request: $request, paginateCustomCount: $paginateCustomCount, resourceOption: $resourceOption);
         }
 
-        if ($resourceClass) {
-            return $resourceClass::collection($query->get());
+        if ($resourceOption) {
+            return $this->resourceClass::collection($query->get());
         }
         $query = $query->get();
         return $query;
@@ -92,7 +93,7 @@ class BaseRepository
 
     /**
      * find data with where clause
-     *
+     * @param Request | null $request
      * @param string $column //column data for where
      * @param string $ident //data for check on yout column
      * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
@@ -101,12 +102,14 @@ class BaseRepository
      * @param string $columnOrder column order data
      * @param string $sortOrder sort method order data
      * @param QueryOptions $getOption use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions ["QueryOptions::GET","QueryOptions::FIRST"]
-     * @param string $resourceClass class for api resource
+     * @param bool $paginateRequest Option for paginate from request
+     * @param int | null $paginateCustomCount this will enable when paginateType is CUSTOM
+     * @param bool $resourceOption class for api resource
      * 
      * @return Collection | array
      */
     public function where(
-        ?Request $request,
+        ?Request $request = null,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -115,17 +118,16 @@ class BaseRepository
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
         QueryOptions $getOption = QueryOptions::GET,
-        PaginateType $paginateType = PaginateType::REQUEST,
-        int $paginateCustomCount = 5,
-        bool $limitOption = true,
-        string $resourceClass = null
+        bool $paginateRequest = true,
+        ?int $paginateCustomCount = 5,
+        bool $resourceOption = false
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
         $query->where($column, $ident)->orderBy($columnOrder, $sortOrder);
         $result = $query;
         switch ($getOption) {
             case QueryOptions::PAGINATE:
-                return $this->pagination(query: $query, limitOption: $limitOption, paginateType: $paginateType, request: $request, paginateCustomCount: $paginateCustomCount, resourceClass: $resourceClass);
+                return $this->pagination(query: $query, paginateRequest: $paginateRequest, request: $request, paginateCustomCount: $paginateCustomCount, resourceOption: $resourceOption);
             case QueryOptions::GET:
                 $result = $query->get();
                 break;
@@ -133,13 +135,13 @@ class BaseRepository
                 $result = $query->first();
                 break;
         }
-        if ($resourceClass) {
+        if ($resourceOption) {
             switch ($getOption) {
                 case QueryOptions::FIRST:
-                    $result = new $resourceClass($result);
+                    $result = new $this->resourceClass($result);
                     break;
                 default:
-                    $result = $resourceClass::collection($result);
+                    $result = $this->resourceClass::collection($result);
                     break;
             }
         }
@@ -148,74 +150,75 @@ class BaseRepository
 
     /**
      * find item by id
-     * @param string | int $id
+     * @param int $id
      * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
      * @param bool $withOtion option for relation data, default is false
      * @param bool $withCountOption option for count relation data, default is false
-     * @param string $resourceClass class for api resource
+     * @param bool $resourceOption class for api resource
      * 
      * @return Model
      */
     public function find(
-        string | int $id,
+        int $id,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
-        string $resourceClass = null,
+        bool $resourceOption = false,
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
         $query->find($id);
         $result = $query;
-        if ($resourceClass) {
-            $result = new $resourceClass($query);
+        if ($resourceOption) {
+            $result = new $this->resourceClass($query);
         }
         return $result;
     }
 
     /**
      * find or fail item by id
-     * @param string | int $id
+     * @param int $id
      * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
      * @param bool $withOtion option for relation data, default is false
      * @param bool $withCountOption option for count relation data, default is false
+     * @param bool $resourceOption option for resource class
      * 
      * @return Model
      */
     public function findOrFail(
-        string | int $id,
+        int $id,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
-        string $resourceClass = null,
+        bool $resourceOption = false,
     ) {
         $query = $this->itemOptionQuery($itemOptions, $withOption, $withCountOption);
         $query = $query->findOrFail($id);
         $result = $query;
-        if ($resourceClass) {
-            $result = new $resourceClass($result);
+        if ($resourceOption) {
+            $result = new $this->resourceClass($result);
         }
         return $result;
     }
 
     /**
      * Create item
-     * @param mixed $request
+     * @param Request $request
      * @return Model
      */
-    public function create(mixed $request)
+    public function create(Request $request)
     {
         return $this->model->create($request->all());
     }
 
     /**
      * Update Item
-     * @param string | int $id
+     * @param int $id
      * @param Request $request
      * 
      * @return bool
      * @throws ModelNotFoundException
      */
-    public function update(string | int $id, Request $request)
+    public function update(int $id, Request $request)
     {
         $source = $this->model->findOrFail($id);
         return $source->update($request->all());
@@ -223,12 +226,12 @@ class BaseRepository
 
     /**
      * Delete Item
-     * @param string | int $id
+     * @param int $id
      * 
      * @return bool
      * @throws ModelNotFoundException
      */
-    public function delete(string | int $id)
+    public function delete(int $id)
     {
         $source = $this->model->findOrFail($id);
         return $source->delete();
@@ -246,23 +249,23 @@ class BaseRepository
 
     /**
      * Force delete item
-     * @param string | int $id
+     * @param int $id
      * @return bool
      */
-    public function forceDelete(string | int $id)
+    public function forceDelete(int $id)
     {
-        $source = $this->model->withTrashed()->findOrFail($id);
+        $source = $this->model->onlyTrashed()->findOrFail($id);
         return $source->forceDelete($id);
     }
 
     /**
      * Restore item
-     * @param string | int $id
+     * @param int $id
      * @return bool
      */
-    public function restore(string | int $id)
+    public function restore(int $id)
     {
-        $source = $this->model->withTrashed()->findOrFail($id);
+        $source = $this->model->onlyTrashed()->findOrFail($id);
         return $source->restore();
     }
 
@@ -306,23 +309,21 @@ class BaseRepository
      * Easly pagination model->paginate() to pagination data
      *
      * @param Builder $query // Your database builder query
-     * @param boolean $limitOption // option if you want to show data as pagination without limit, if false this will force $requestLimit to MAX INT
-     * @param PaginateType $paginateType
      * @param Request $request
+     * @param bool $paginateRequest
      * @param integer $paginateCustomCount
-     * @param string|null $resourceClass
+     * @param string|null $resourceOption
      * 
      * @return array
      */
     public function pagination(
         Builder $query,
-        bool $limitOption = true,
-        PaginateType $paginateType = PaginateType::REQUEST,
         Request $request,
-        int $paginateCustomCount = 5,
-        string $resourceClass = null
+        bool $paginateRequest = true,
+        ?int $paginateCustomCount = 5,
+        bool $resourceOption = false
     ) {
-        switch ($paginateType) {
+        switch ($paginateRequest) {
             case PaginateType::CUSTOM:
                 $limit = $paginateCustomCount;
                 break;
@@ -330,16 +331,21 @@ class BaseRepository
                 $limit = $request->limit ?? 5;
                 break;
         }
-        if (!$limitOption) {
+        if (!$limit) {
             $limit =  PHP_INT_MAX;
         }
         $data = $query->paginate($limit);
         $pagination = new Paginate($data);
-        if ($resourceClass) {
-            $data = $resourceClass::collection($data);
+        if ($resourceOption) {
+            $data = $this->resourceClass::collection($data);
             $data = [
                 'pagination' => $pagination,
                 'data' => $data
+            ];
+        } else {
+            $data = [
+                'pagination' => $pagination,
+                'data' => $data->items()
             ];
         }
         return $data;
@@ -349,21 +355,19 @@ class BaseRepository
      * Easly pagination collection data to pagination data
      *
      * @param Collection $collection
-     * @param boolean $limitOption
-     * @param PaginateType $paginateType
      * @param Request $request
-     * @param integer $paginateCustomCount
+     * @param bool $paginateRequest
+     * @param int $paginateCustomCount
      * 
      * @return LengthAwarePaginator
      */
     public function customPaginate(
         Collection $collection,
-        bool $limitOption = true,
-        PaginateType $paginateType = PaginateType::REQUEST,
         Request $request,
-        int $paginateCustomCount = 5,
+        bool $paginateRequest = true,
+        ?int $paginateCustomCount = 5,
     ) {
-        switch ($paginateType) {
+        switch ($paginateRequest) {
             case PaginateType::CUSTOM:
                 $limit = $paginateCustomCount;
                 break;
@@ -371,7 +375,7 @@ class BaseRepository
                 $limit = $request->limit ?? 5;
                 break;
         }
-        if (!$limitOption) {
+        if (!$limit) {
             $limit =  PHP_INT_MAX;
         }
         $currentPage = $request->page;

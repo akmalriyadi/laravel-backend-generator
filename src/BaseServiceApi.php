@@ -25,10 +25,9 @@ class BaseServiceApi
      * @param bool $paginateOption option for pagination data
      * @param PaginateType $paginateType option for type paginate
      * @param int $paginateCustomCount this will enable when paginateType is CUSTOM
-     * @param bool $limitOption option if you want to show data as pagination without limit, if false this will force $requestLimit to MAX INT
      * @param string $columnOrder column order data
-     * @param string $sortOrder sort method order data
-     * @param string $resourceClass class for api resource
+     * @param bool $sortOrder sort method order data
+     * @param string $resourceOption class for api resource
      * 
      * @return mixed
      */
@@ -39,15 +38,14 @@ class BaseServiceApi
         bool $withCountOption = false,
         bool $filterOption = false,
         bool $paginateOption = false,
-        PaginateType $paginateType = PaginateType::REQUEST,
+        bool $paginateRequest = true,
         ?int $paginateCustomCount = 5,
-        bool $limitOption = true,
-        ?string $columnOrder = 'created_at',
-        ?string $sortOrder = 'desc',
-        ?string $resourceClass = null
+        string $columnOrder = 'created_at',
+        string $sortOrder = 'desc',
+        bool $resourceOption = false
     ) {
         try {
-            $result = $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $paginateType, $paginateCustomCount, $limitOption, $columnOrder, $sortOrder, $resourceClass);
+            $result = $this->mainRepository->all($request, $itemOptions, $withOption, $withCountOption, $filterOption, $paginateOption, $paginateRequest, $paginateCustomCount, $columnOrder, $sortOrder, $resourceOption);
 
             return $this->setResult($result)
                 ->setCode(200)
@@ -66,14 +64,14 @@ class BaseServiceApi
      * @param bool $withOtion option for relation data, default is false
      * @param bool $withCountOption option for count relation data, default is false
      * @param string $columnOrder column order data
-     * @param string $sortOrder sort method order data
+     * @param bool $sortOrder sort method order data
      * @param QueryOptions $getOption use AkmalRiyadi\LaravelBackendGenerator\Enums\QueryOptions ["QueryOptions::GET","QueryOptions::FIRST"]
-     * @param string $resourceClass class for api resource
+     * @param string $resourceOption class for api resource
      * 
      * @return mixed
      */
     public function where(
-        ?Request $request,
+        ?Request $request = null,
         string $column,
         string $ident,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
@@ -82,13 +80,12 @@ class BaseServiceApi
         string $columnOrder = 'created_at',
         string $sortOrder = 'desc',
         QueryOptions $getOption = QueryOptions::GET,
-        PaginateType $paginateType = PaginateType::REQUEST,
-        int $paginateCustomCount = 5,
-        bool $limitOption = true,
-        string $resourceClass = null
+        bool $paginateRequest = true,
+        ?int $paginateCustomCount = 5,
+        bool $resourceOption = false
     ) {
         try {
-            $result = $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $paginateType, $paginateCustomCount, $limitOption, $resourceClass);
+            $result = $this->mainRepository->where($request, $column, $ident, $itemOptions, $withOption, $withCountOption, $columnOrder, $sortOrder, $getOption, $paginateRequest, $paginateCustomCount, $resourceOption);
 
             return $this->setResult($result)
                 ->setCode(200)
@@ -100,23 +97,23 @@ class BaseServiceApi
 
     /**
      * find item by id
-     * @param string | string | int $id
+     * @param string | int $id
      * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
      * @param bool $withOtion option for relation data, default is false
      * @param bool $withCountOption option for count relation data, default is false
-     * @param string $resourceClass class for api resource
+     * @param string $resourceOption class for api resource
      * 
      * @return mixed
      */
     public function find(
-        string | int $id,
+        int $id,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
-        string $resourceClass = null,
+        bool $resourceOption = false,
     ) {
         try {
-            $result = $this->mainRepository->find($id, $itemOptions, $withOption, $withCountOption, $resourceClass);
+            $result = $this->mainRepository->find($id, $itemOptions, $withOption, $withCountOption, $resourceOption);
             return $this->setResult($result)
                 ->setCode(200)
                 ->setStatus(true);
@@ -127,7 +124,7 @@ class BaseServiceApi
 
     /**
      * find or fail item by id
-     * @param string | int $id
+     * @param int $id
      * @param ItemOptions $itemOptions use AkmalRiyadi\LaravelBackendGenerator\Enums\ItemOptions ["ItemOptions::DEFAULT","ItemOptions::WITH_TRASHED","ItemOptions::ONLY_TRASHED"]
      * @param bool $withOtion option for relation data, default is false
      * @param bool $withCountOption option for count relation data, default is false
@@ -135,14 +132,14 @@ class BaseServiceApi
      * @return mixed
      */
     public function findOrFail(
-        string | int $id,
+        int $id,
         ItemOptions $itemOptions = ItemOptions::DEFAULT,
         bool $withOption = false,
         bool $withCountOption = false,
-        string $resourceClass = null,
+        bool $resourceOption = false,
     ) {
         try {
-            $result = $this->mainRepository->findOrFail($id, $itemOptions, $withOption, $withCountOption, $resourceClass);
+            $result = $this->mainRepository->findOrFail($id, $itemOptions, $withOption, $withCountOption, $resourceOption);
             return $this->setResult($result)
                 ->setCode(200)
                 ->setStatus(true);
@@ -170,12 +167,12 @@ class BaseServiceApi
 
     /**
      * Update Item
-     * @param string | int $id
-     * @param mixed $request 
+     * @param int $id
+     * @param Request $request 
      * 
      * @return mixed
      */
-    public function update(string | int $id, mixed $request)
+    public function update(int $id, Request $request)
     {
         try {
             $result = $this->mainRepository->update($id, $request);
@@ -189,11 +186,11 @@ class BaseServiceApi
 
     /**
      * Delete Item
-     * @param string | int $id
+     * @param int $id
      * 
      * @return mixed
      */
-    public function delete(string | int $id)
+    public function delete(int $id)
     {
         try {
             $result = $this->mainRepository->delete($id);
@@ -224,10 +221,10 @@ class BaseServiceApi
 
     /**
      * Force delete item
-     * @param string | int $id
+     * @param int $id
      * @return mixed
      */
-    public function forceDelete(string | int $id)
+    public function forceDelete(int $id)
     {
         try {
             $result = $this->mainRepository->forceDelete($id);
@@ -241,10 +238,10 @@ class BaseServiceApi
 
     /**
      * Restore item
-     * @param string | int $id
+     * @param int $id
      * @return mixed
      */
-    public function restore(string | int $id)
+    public function restore(int $id)
     {
         try {
             $result = $this->mainRepository->restore($id);

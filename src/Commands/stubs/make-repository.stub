@@ -4,6 +4,7 @@ namespace {namespace};
 
 use AkmalRiyadi\LaravelBackendGenerator\BaseRepository;
 use App\Models\{ModelName};
+use AkmalRiyadi\LaravelBackendGenerator\Resources\DefaultResource;
 
 class {repositoryName} extends BaseRepository{
 
@@ -14,12 +15,15 @@ class {repositoryName} extends BaseRepository{
     */
     protected $model;
     protected $option;
+    protected $resourceClass;
 
     public function __construct({ModelName} $model)
     {
         $this->model = $model;
         $this->option['with'] = [];
         $this->option['withCount'] = [];
+
+         $this->resourceClass = DefaultResource::class;
     }
 
     // Write something awesome :)
